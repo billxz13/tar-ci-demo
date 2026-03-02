@@ -1,1 +1,51 @@
-"<h1>Hello CI</h1>" 
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>讀取 A.txt 範例</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        #content {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>讀取 A.txt 內容</h1>
+
+    <button onclick="loadText()">讀取 A.txt</button>
+
+    <div id="content">尚未讀取內容...</div>
+
+    <script>
+        function loadText() {
+            fetch("A.txt")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("讀取失敗");
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById("content").textContent = data;
+                })
+                .catch(error => {
+                    document.getElementById("content").textContent = "發生錯誤: " + error;
+                });
+        }
+    </script>
+
+</body>
+</html>
