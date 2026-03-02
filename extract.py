@@ -1,15 +1,26 @@
 import sys
 import tarfile
 import os
+import shutil
 
 repo_dir = os.environ["GITHUB_WORKSPACE"]
-target_dir = os.path.join(repo_dir, "docs")
+docs_dir = os.path.join(repo_dir, "docs")
 
-os.makedirs(target_dir, exist_ok=True)
+# 清空舊 docs
+if os.path.exists(docs_dir):
+    shutil.rmtree(docs_dir)
+
+os.makedirs(docs_dir, exist_ok=True)
 
 tar_path = sys.argv[1]
 
 with tarfile.open(tar_path, "r") as tar:
-    tar.extractall(path=target_dir)
+    for member in tar.getmembers():
+        if member.isdir():
+            continue
 
-print("Extracted to docs/")
+        # 只取檔名，不保留上層資料夾
+        member.name = os.path.basename(member.name)
+        tar.extract(member, docs_dir)
+
+print("Extracted clean site into docs/")
